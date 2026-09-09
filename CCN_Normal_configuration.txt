@@ -272,8 +272,8 @@ MovementModel.rngSeed = [1;2]
 # Router buffers: 5k,10k,20k,40k,80k bytes
 # TTL: 60,120,180,240,300 minutes (1,2,3,4,5 hours)
 # RNG seeds: 1,2
-# 5 intervals x 5 buffers x 5 TTLs x 2 seeds = 150 runs
-# one.bat -b 150 CCN_Normal_configuration.txt
+# 5 intervals x 5 buffers x 5 TTLs x 2 seeds = 250 runs
+# one.bat -b 250 CCN_Normal_configuration.txt
 
 
 #####################################################
