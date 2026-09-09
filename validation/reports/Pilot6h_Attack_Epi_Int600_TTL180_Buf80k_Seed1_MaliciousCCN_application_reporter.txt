@@ -1,0 +1,25 @@
+MaliciousCCN application reporter for scenario Pilot6h_Attack_Epi_Int600_TTL180_Buf80k_Seed1
+sim_time: 21600.1000
+
+oppo_cache_hit: 13
+oppo_cache_miss: 537
+drop_list:  0
+drop_pit:  8
+drop_nonce:  2133
+query_count: 182
+duplicated_query: 28
+static_cache_hit: 161
+static_cache_miss: 127
+response_count: 167
+false_content_generated: 129
+false_content_cached: 2474
+false_content_received: 142
+legitimate_content_received: 25
+false_content_reception_ratio: 0.8502994011976048
+legitimate_content_satisfaction_ratio: 0.13736263736263737
+total_cache_evictions: 2532
+legitimate_content_evicted_by_false: 325
+max_cache_occupancy: 10
+max_false_content_in_cache: 10
+max_false_cache_ratio: 1.0
+average_interval: 1716.9892215565378

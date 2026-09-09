@@ -1,8 +1,8 @@
 Settings.cartesianRunSettings = SinkCCN.interval,Group.bufferSize,Group.msgTtl,MovementModel.rngSeed
 
 # ============================================================
-# NORMAL CCN-DTN SCENARIO
-# 12-HOUR CONTROLLED EXPERIMENT
+# BENIGN FIRSTCONTACT CCN-DTN SCENARIO
+# 24-HOUR EXPERIMENT
 # ============================================================
 
 
@@ -15,13 +15,13 @@ SinkCCN.type = CCN_application
 # Consumer mode
 SinkCCN.mode = 1
 
-# Interest generation
+# Interest generation time
 SinkCCN.interval = [1800;1500;1200;900;600]
 SinkCCN.numOfMsgToGenerate = 1000
 SinkCCN.queryRange = 1,101
 SinkCCN.queryDistribution = 1
 SinkCCN.seedQuery = 12
-SinkCCN.destinationRange = 45,50
+SinkCCN.destinationRange = 90,100
 
 # Message sizes
 SinkCCN.interestSize = 50
@@ -52,11 +52,12 @@ RelayCCN.cacheCapacity = 10
 RelayCCN.avaCache = 0,1
 RelayCCN.maxCarriedContent = 1
 RelayCCN.enablePIT = true
+RelayCCN.destinationRange = 90,100
 
 
 ##################################################
 # NORMAL PRODUCER APPLICATION
-# Used by addresses 45-47
+# Used by addresses 90-95
 ##################################################
 
 SourceCCN.type = CCN_application
@@ -80,11 +81,12 @@ SourceCCN.seedStaticCache = 36
 
 # PIT enabled
 SourceCCN.enablePIT = true
+SourceCCN.destinationRange = 90,100
 
 
 ################################################################
 # CONTROL NORMAL PRODUCER APPLICATION
-# Nodes 48-49 Matches the malicious producer capacity and range
+# Nodes 96-99 Matches the malicious producer capacity and range
 ################################################################
 
 ControlSourceCCN.type = CCN_application
@@ -108,6 +110,7 @@ ControlSourceCCN.seedStaticCache = 36
 
 # PIT enabled
 ControlSourceCCN.enablePIT = true
+ControlSourceCCN.destinationRange = 90,100
 
 
 ##############################################################
@@ -115,62 +118,73 @@ ControlSourceCCN.enablePIT = true
 ##############################################################
 
 #=============================================================
-# Group 1: 40 pure DTN relay nodes (Nodes 0-39)
+# Group 1: 80 pure DTN relay nodes (Nodes 0-79)
 #=============================================================
 
 Group1.groupID = d
-Group1.nrofHosts = 40
+Group1.nrofHosts = 80
+Group1.nrofApplications = 0
 
 
 #=============================================================
-# Group 2: 3 CCN consumers  (Nodes 40-42)
+# Group 2: 6 CCN consumers  (Nodes 80-85)
 #=============================================================
 
 Group2.groupID = sK
-Group2.nrofHosts = 3
+Group2.nrofHosts = 6
 Group2.nrofApplications = 1
 Group2.application1 = SinkCCN
 
 
 #=============================================================
-# Group 3: 2 CCN Intermediate/cache nodes (Nodes 43-44)
+# Group 3: 4 CCN Intermediate/cache nodes (Nodes 86-89)
 #=============================================================
 
 Group3.groupID = rL
-Group3.nrofHosts = 2
+Group3.nrofHosts = 4
 Group3.nrofApplications = 1
 Group3.application1 = RelayCCN
 
 
 #=============================================================
-# Group 4: 3 Normal Producers (Nodes 45-47)
+# Group 4: 6 Normal Producers (Nodes 90-95)
 #=============================================================
 
 Group4.groupID = sR
-Group4.nrofHosts = 3
+Group4.nrofHosts = 6
 Group4.nrofApplications = 1
 Group4.application1 = SourceCCN
+Group4.bufferSize =
+Group4.movementModel = ShortestPathMapBasedMovement
+Group4.waitTime = 0,30
+Group4.speed = 2.7,13.9
+Group4.nrofInterfaces = 1
 
 
 #=============================================================
-# Group 5: 2 Control Normal Producers (Nodes 48-49)
-# groupID m is kept identical to the attack scenarioS
+# Group 5: 4 Control Normal Producers (Nodes 96-99)
+# and correspond to the malicious producer positions in the Attack scenario
 #=============================================================
 
 Group5.groupID = nS
-Group5.nrofHosts = 2
+Group5.nrofHosts = 4
 Group5.nrofApplications = 1
 Group5.application1 = ControlSourceCCN
+Group5.bufferSize =
+Group5.movementModel = ShortestPathMapBasedMovement
+Group5.waitTime = 0,30
+Group5.speed = 2.7,13.9
+Group5.nrofInterfaces = 1
 
 
 #####################################################
 # SCENARIO SETTINGS
 #####################################################
 
-Scenario.name = CCN_Normal_48h_Int%%SinkCCN.interval%%_TTL%%Group.msgTtl%%_Buf%%Group.bufferSize%%_Seed%%MovementModel.rngSeed%%
+Scenario.name = CCN_Normal_24h_Int%%SinkCCN.interval%%_TTL%%Group.msgTtl%%_Buf%%Group.bufferSize%%_Seed%%MovementModel.rngSeed%%
 Scenario.simulateConnections = true
 Scenario.updateInterval = 0.1
-Scenario.endTime = 172800
+Scenario.endTime = 86400
 Scenario.nrofHostGroups = 5
 
 
@@ -189,7 +203,7 @@ btInterface.transmitRange = 10
 
 Group.movementModel = ShortestPathMapBasedMovement
 Group.okMaps = 1
-Group.router = EpidemicRouter
+Group.router = FirstContactRouter
 Group.waitTime = 0,30
 Group.speed = 2.7,13.9
 Group.nrofInterfaces = 1
@@ -201,10 +215,10 @@ Group.interface1 = btInterface
 #####################################################
 
 # DTN router buffer size
-Group.bufferSize = [100k;500k;1M;2M;5M]
+Group.bufferSize = [5k;10k;20k;40k;80k]
 
 # Message lifetime in minutes
-Group.msgTtl = [300;600]
+Group.msgTtl = [60;120;180;240;300]
 
 # Disable ordinary DTN message generation
 # Only CCN Interest/Data traffic is evaluated
@@ -239,7 +253,7 @@ Report.warmup = 0
 Report.reportDir = reports/
 
 Report.report1 = MessageStatsReport
-Report.report2 = MaliciousCCN_application_reporter
+Report.report2 = CCN_application_reporter
 
 
 #####################################################
@@ -247,33 +261,18 @@ Report.report2 = MaliciousCCN_application_reporter
 #####################################################
 
 # Multiple mobility randomness seeds
-MovementModel.rngSeed = [1;2;3]
+MovementModel.rngSeed = [1;2]
 
 
 #####################################################
 # EXPERIMENT COUNT
 #####################################################
 
-# Consumer interval values = 3
-#   1800 seconds: low request load
-#    900 seconds: medium request load
-#    600 seconds: high request load
-#
-# DTN buffer sizes = 3
-#   100k: constrained buffer
-#     1M: moderate buffer
-#     5M: large baseline buffer
-#
-# Message TTL values = 2
-#    300 minutes: 5-hour lifetime
-#    600 minutes: 10-hour lifetime
-#
-# RNG seeds = 3
-#
-# Total runs for this normal configuration:
-# 5 intervals x 5 buffer sizes x 2 TTL values x 3 seeds = 150 runs
-#
-# Run command:
+# Intervals: 1800,1500,1200,900,600 seconds
+# Router buffers: 5k,10k,20k,40k,80k bytes
+# TTL: 60,120,180,240,300 minutes (1,2,3,4,5 hours)
+# RNG seeds: 1,2
+# 5 intervals x 5 buffers x 5 TTLs x 2 seeds = 150 runs
 # one.bat -b 150 CCN_Normal_configuration.txt
 
 

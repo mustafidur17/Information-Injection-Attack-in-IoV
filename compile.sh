@@ -1,3 +1,6 @@
+#!/bin/sh
+set -eu
+
 targetdir=target
 
 if [ ! -d "$targetdir" ]; then mkdir $targetdir; fi

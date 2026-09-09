@@ -14,13 +14,29 @@ import core.SimClock;
 
 public class CCN_application_reporter extends Report implements ApplicationListener {
 
-	private int oppo_cahce_hit=0;
+	/*
+	 * Normal-scenario reporter. Its metric names and output order intentionally
+	 * mirror MaliciousCCN_application_reporter so OppNDA can compare Normal and
+	 * Attack reports directly. Attack-specific counters should remain zero in a
+	 * clean Normal run, while legitimate/cache counters are measured normally.
+	 */
+
+	private int oppo_cache_hit=0;
 	private int oppo_cache_miss=0;
 	private int query_count=0;
 	private int static_cache_hit=0;
 	private int static_cache_miss=0;
 	private int response_count=0;
-	private int total_interval=0;
+	private int false_content_generated = 0;
+	private int false_content_cached = 0;
+	private int false_content_received = 0;
+    private int legitimate_content_received = 0;
+	private int total_cache_evictions = 0;
+	private int legitimate_content_evicted_by_false = 0;
+	private int max_cache_occupancy = 0;
+	private int max_false_content_in_cache = 0;
+	private double max_false_cache_ratio = 0.0;
+	private double total_interval=0.0;
 	private int num_got_response = 0;
 	private int msg_forwarded = 0;
 	private int response_from_other = 0;
@@ -89,7 +105,7 @@ public class CCN_application_reporter extends Report implements ApplicationListe
 	public void gotEvent(String event, Object params, Application app,
 			DTNHost host) {
 		if (event.equals("oppoCacheHit")) {
-			this.oppo_cahce_hit++;
+			this.oppo_cache_hit++;
 		}
 		
 		if (event.equals("forwardingStopList")) {
@@ -121,11 +137,55 @@ public class CCN_application_reporter extends Report implements ApplicationListe
 			//this.delays.add((Double)params);
 			this.static_cache_miss++;
 		}
-		
+
+		if (event.equals("FalseContentGenerated")) {
+            this.false_content_generated++;
+        }
+
+		if (event.equals("FalseContentCached")) {
+            this.false_content_cached++;
+        }
+
+	    if (event.equals("FalseContentReceived")) {
+            this.false_content_received++;
+        }
+
+        if (event.equals("LegitimateContentReceived")) {
+            this.legitimate_content_received++;
+        }
+
+		if (event.equals("CacheEviction")) {
+			this.total_cache_evictions++;
+		}
+
+		if (event.equals("LegitimateContentEvictedByFalse")) {
+			this.legitimate_content_evicted_by_false++;
+		}
+
+		if (event.equals("CacheState")) {
+			int[] cacheState = (int[])params;
+			int occupancy = cacheState[0];
+			int falseEntries = cacheState[1];
+			int capacity = cacheState[2];
+
+			if (occupancy > this.max_cache_occupancy) {
+				this.max_cache_occupancy = occupancy;
+			}
+			if (falseEntries > this.max_false_content_in_cache) {
+				this.max_false_content_in_cache = falseEntries;
+			}
+			if (capacity > 0) {
+				double falseRatio = (double)falseEntries / capacity;
+				if (falseRatio > this.max_false_cache_ratio) {
+					this.max_false_cache_ratio = falseRatio;
+				}
+			}
+		}
+
 		if (event.equals("OriginalGotResponse")) {
 			this.response_count++;
 			
-			int position = locate_query_key((String)params);
+			int position = locate_query_key((String)params, host.toString());
 			if(position != -1){
 				msg_record.get(position).setReceivedTime(SimClock.getTime());
 				msg_record.get(position).setGotResponse(true);
@@ -159,14 +219,17 @@ public class CCN_application_reporter extends Report implements ApplicationListe
 	}
 	
 	void print_state(){
-		System.out.println("\r this.oppo_cahce_hit = " + this.oppo_cahce_hit);
+		System.out.println("\r this.oppo_cache_hit = " + this.oppo_cache_hit);
 		System.out.print("\r this.oppo_cache_miss = " + this.oppo_cache_miss);
 	}
 	
-	public int locate_query_key(String key){
-		for(MessageRecoder ms: msg_record){
-			if(ms.getQueryKey().equals(key))
-				return msg_record.indexOf(ms);
+	public int locate_query_key(String key, String hostName){
+		for(int i = 0; i < msg_record.size(); i++){
+			MessageRecoder ms = msg_record.get(i);
+			if(!ms.getGotResponse() && ms.getQueryKey().equals(key) &&
+					ms.getHostName().equals(hostName)){
+				return i;
+			}
 		}
 		return -1;
 	}
@@ -174,6 +237,7 @@ public class CCN_application_reporter extends Report implements ApplicationListe
 	
 	
 	public void calTotalInterval(){
+		total_interval = 0.0;
 		for(MessageRecoder ms : msg_record){
 			if(ms.getGotResponse() == true){
 				total_interval += ms.getInterval();
@@ -185,16 +249,28 @@ public class CCN_application_reporter extends Report implements ApplicationListe
 	
 	@Override
 	public void done() {
-		write("WebApp stats for scenario " + getScenarioName() + 
+		int totalContentReceived =
+        this.false_content_received +
+        this.legitimate_content_received;
+
+        double falseContentReceptionRatio = 0.0;
+
+       if (totalContentReceived > 0) {
+          falseContentReceptionRatio = (double) this.false_content_received / totalContentReceived;
+        }
+
+		write("CCN application reporter for scenario " + getScenarioName() + 
 				"\nsim_time: " + format(getSimTime()));
 		
 		calTotalInterval();
-		if(num_got_response == 0){
-			num_got_response = 1;
-		}
+		double averageInterval = num_got_response == 0 ? 0.0 :
+				this.total_interval / this.num_got_response;
 		
+		double legitimateContentSatisfactionRatio = query_count == 0 ? 0.0 :
+				(double) legitimate_content_received / query_count;
+
 		String statsText = 
-			"\noppo_cahce_hit: " + this.oppo_cahce_hit + 
+			"\noppo_cache_hit: " + this.oppo_cache_hit + 
 			"\noppo_cache_miss: " + this.oppo_cache_miss +
 			"\ndrop_list:  "		    + this.forwarding_Stop_l+
 			"\ndrop_pit:  "		    + this.forwarding_Stop_p+
@@ -204,9 +280,22 @@ public class CCN_application_reporter extends Report implements ApplicationListe
 			"\nstatic_cache_hit: " + this.static_cache_hit +
 			"\nstatic_cache_miss: " + this.static_cache_miss +
 			"\nresponse_count: " + this.response_count +
+			"\nfalse_content_generated: " + this.false_content_generated +
+			"\nfalse_content_cached: " + this.false_content_cached +
+			"\nfalse_content_received: " + this.false_content_received +
+            "\nlegitimate_content_received: " + this.legitimate_content_received +
+			"\nfalse_content_reception_ratio: " + falseContentReceptionRatio +
+			"\nlegitimate_content_satisfaction_ratio: " + legitimateContentSatisfactionRatio +
+			"\ntotal_cache_evictions: " + this.total_cache_evictions +
+			"\nlegitimate_content_evicted_by_false: " +
+					this.legitimate_content_evicted_by_false +
+			"\nmax_cache_occupancy: " + this.max_cache_occupancy +
+			"\nmax_false_content_in_cache: " +
+					this.max_false_content_in_cache +
+			"\nmax_false_cache_ratio: " + this.max_false_cache_ratio +
 			//"\nresource found: " + this.res_found + 
 			//"\nmsg_forwarded: " + this.msg_forwarded +
-			"\naverage_interval: " + this.total_interval/this.num_got_response
+			"\naverage_interval: " + averageInterval
 			;
 		
 		write(statsText);

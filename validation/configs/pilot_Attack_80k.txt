@@ -1,0 +1,8 @@
+Settings.cartesianRunSettings =
+Scenario.name = Pilot6h_Attack_Epi_Int600_TTL180_Buf80k_Seed1
+Scenario.endTime = 21600
+SinkCCN.interval = 600
+Group.msgTtl = 180
+Group.bufferSize = 80k
+MovementModel.rngSeed = 1
+Report.reportDir = validation/reports/

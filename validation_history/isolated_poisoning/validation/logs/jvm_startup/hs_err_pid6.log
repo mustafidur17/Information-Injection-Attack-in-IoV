@@ -1,0 +1,384 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGBUS (0x7) at pc=0x00007f1d7d65ac91, pid=6, tid=7
+#
+# JRE version:  (17.0.20+8) (build )
+# Java VM: OpenJDK 64-Bit Server VM (17.0.20+8-1-24.04-Ubuntu, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, linux-amd64)
+# Problematic frame:
+# V  [libjvm.so+0xc85c91]  PerfMemory::alloc(unsigned long)+0x61
+#
+# Core dump will be written. Default location: core.6 (may not exist)
+#
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -Xmx512M core.DTNSim -b 1 CCN_Normal_configuration.txt validation/configs/pilot_Normal_80k.txt
+
+Host: AMD EPYC 9V74 80-Core Processor, 9 cores, 14G, Ubuntu 24.04.3 LTS
+Time: Wed Sep  9 07:06:28 2026 CEST elapsed time: 0.014478 seconds (0d 0h 0m 0s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f1d78018140):  JavaThread "Unknown thread" [_thread_in_vm, id=7, stack(0x00007f1d7c540000,0x00007f1d7c640000)]
+
+Stack: [0x00007f1d7c540000,0x00007f1d7c640000],  sp=0x00007f1d7c63cb30,  free space=1010k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xc85c91]  PerfMemory::alloc(unsigned long)+0x61
+V  [libjvm.so+0xc83b64]  PerfData::create_entry(BasicType, unsigned long, unsigned long)+0x74
+V  [libjvm.so+0xc85281]  PerfDataManager::create_long_counter(CounterNS, char const*, PerfData::Units, long, JavaThread*)+0x71
+V  [libjvm.so+0xc1d7e4]  ObjectMonitor::Initialize()+0x74
+V  [libjvm.so+0xec3b67]  Threads::create_vm(JavaVMInitArgs*, bool*)+0x307
+V  [libjvm.so+0x8cdfc3]  JNI_CreateJavaVM+0x53
+C  [libjli.so+0x3dc3]  JavaMain+0x93
+C  [libjli.so+0x815d]  ThreadJavaMain+0xd
+C  [libc.so.6+0x9caa4]
+
+
+siginfo: si_signo: 7 (SIGBUS), si_code: 2 (BUS_ADRERR), si_addr: 0x00007f1d7c53601c
+
+Registers:
+RAX=0x0000000000000058, RBX=0x0000000000000038, RCX=0x0000000000000000, RDX=0x00007f1d7c536000
+RSP=0x00007f1d7c63cb30, RBP=0x00007f1d7c63cb50, RSI=0x000000000000000b, RDI=0x00007f1d78015108
+R8 =0x0000000000000073, R9 =0x0000000000000000, R10=0x00000000ffffffff, R11=0x0000000000000000
+R12=0x00007f1d78015100, R13=0x00007f1d7c536020, R14=0x00007f1d7801a2b0, R15=0x0000000000000004
+RIP=0x00007f1d7d65ac91, EFLAGS=0x0000000000010202, CSGSFS=0x002b000000000033, ERR=0x0000000000000006
+  TRAPNO=0x000000000000000e
+
+XMM[0]=0x736e6f6974616c66 0x6e495f636e79735f
+XMM[1]=0x736e6f6974616c66 0x6e495f636e79735f
+XMM[2]=0x0000000000000000 0x00007f1d7801a1d0
+XMM[3]=0x00007f1d7d61118b 0x00007f1d7c63cab0
+XMM[4]=0x00007f1d78003950 0x00007f1d7801a1d0
+XMM[5]=0x00007f1d7d5d0f8f 0x00007f1d7c63ca90
+XMM[6]=0x0000000000000000 0x0000000000000000
+XMM[7]=0x00007f1d7c540000 0x00007f1d7c63edaf
+XMM[8]=0x00007f1d7da34cc0 0x00007f1d7da352cc
+XMM[9]=0x00007f1d7da34e00 0x00007f1d7da352cc
+XMM[10]=0x00007f1d7da34f40 0x00007f1d7da34f80
+XMM[11]=0x00007f1d7da35160 0x00007f1d7da34f80
+XMM[12]=0x00007f1d7da34fe0 0x00007f1d7da352cc
+XMM[13]=0x00007f1d7da35060 0x00007f1d7da352cc
+XMM[14]=0x00007f1d7da350e0 0x00007f1d7da352cc
+XMM[15]=0x0000000a00000008 0x0000070080000002
+  MXCSR=0x00001fa0
+
+
+Top of Stack: (sp=0x00007f1d7c63cb30)
+0x00007f1d7c63cb30:   0000000000000008 0000000000000030
+0x00007f1d7c63cb40:   0000000000000000 0000000000000038
+0x00007f1d7c63cb50:   00007f1d7c63cbb0 00007f1d7d658b64
+0x00007f1d7c63cb60:   00007f1d7c63cbb0 0000000000000008
+0x00007f1d7c63cb70:   0000000b7c63cba0 0000000000000018
+0x00007f1d7c63cb80:   00007f1d7c540000 000000000000000e
+0x00007f1d7c63cb90:   00007f1d7d9b96e2 0000000000000004
+0x00007f1d7c63cba0:   0000000000000000 00007f1d7801a2b0
+0x00007f1d7c63cbb0:   00007f1d7c63cc00 00007f1d7d65a281
+0x00007f1d7c63cbc0:   0000000000004000 00007f1d78018140
+0x00007f1d7c63cbd0:   00007f1d7c540000 00007f1d78018140
+0x00007f1d7c63cbe0:   00007f1d7c63cc18 00007f1d7c63cc80
+0x00007f1d7c63cbf0:   00007f1d7c63edaf 00007f1d7c540000
+0x00007f1d7c63cc00:   00007f1d7c63cc30 00007f1d7d5f27e4
+0x00007f1d7c63cc10:   00007f1d78018140 00007f1d78018140
+0x00007f1d7c63cc20:   00007f1d7c63cc60 00007f1d78018140
+0x00007f1d7c63cc30:   00007f1d7c63ed80 00007f1d7d898b67
+0x00007f1d7c63cc40:   0000000000000000 0000000000000000
+0x00007f1d7c63cc50:   0000000000000000 0000000000000000
+0x00007f1d7c63cc60:   0000000000000001 000001a0848f72b0
+0x00007f1d7c63cc70:   0000000000000000 0000000000000000
+0x00007f1d7c63cc80:   0000000000000100 0000000000000000
+0x00007f1d7c63cc90:   0000000000000000 0000000000000000
+0x00007f1d7c63cca0:   0000000000000000 00007f1d7d9c28a9
+0x00007f1d7c63ccb0:   0000000000000000 0000000000000000
+0x00007f1d7c63ccc0:   0000000000000000 0000000000000000
+0x00007f1d7c63ccd0:   0000000000000000 0000000000000000
+0x00007f1d7c63cce0:   0000000000000000 0000000000000000
+0x00007f1d7c63ccf0:   0000000000000000 0000000000000000
+0x00007f1d7c63cd00:   0000000000000000 0000000000000000
+0x00007f1d7c63cd10:   0000000000000000 0000000000000000
+0x00007f1d7c63cd20:   0000000000000000 0000000000000000 
+
+Instructions: (pc=0x00007f1d7d65ac91)
+0x00007f1d7d65ab91:   f8 02 74 33 8b 05 85 f0 6d 00 85 c0 74 1f 80 3d
+0x00007f1d7d65aba1:   6a f0 6d 00 00 75 16 48 83 3d 90 f0 6d 00 00 74
+0x00007f1d7d65abb1:   05 e8 f9 0a 00 00 c6 05 52 f0 6d 00 01 5d c3 c3
+0x00007f1d7d65abc1:   0f 1f 80 00 00 00 00 48 8d 05 09 1c 6e 00 48 83
+0x00007f1d7d65abd1:   38 00 75 c0 e8 76 e7 ff ff eb b9 0f 1f 40 00 f3
+0x00007f1d7d65abe1:   0f 1e fa 8b 05 36 f0 6d 00 85 c0 74 2a 80 3d 1b
+0x00007f1d7d65abf1:   f0 6d 00 00 75 21 48 83 3d 41 f0 6d 00 00 74 1f
+0x00007f1d7d65ac01:   55 48 89 e5 e8 a6 0a 00 00 c6 05 ff ef 6d 00 01
+0x00007f1d7d65ac11:   5d c3 0f 1f 44 00 00 c3 0f 1f 80 00 00 00 00 c6
+0x00007f1d7d65ac21:   05 e9 ef 6d 00 01 c3 0f 1f 84 00 00 00 00 00 f3
+0x00007f1d7d65ac31:   0f 1e fa 55 48 89 e5 41 55 41 54 53 48 83 ec 08
+0x00007f1d7d65ac41:   48 8d 05 98 d7 67 00 80 38 00 74 73 48 8d 05 04
+0x00007f1d7d65ac51:   be 6d 00 48 89 fb 4c 8b 20 4d 85 e4 74 08 4c 89
+0x00007f1d7d65ac61:   e7 e8 89 5e f7 ff 4c 8b 2d c2 ef 6d 00 48 8b 15
+0x00007f1d7d65ac71:   a3 ef 6d 00 49 8d 44 1d 00 48 3b 05 b7 ef 6d 00
+0x00007f1d7d65ac81:   73 35 48 89 05 a6 ef 6d 00 48 2b 05 af ef 6d 00
+0x00007f1d7d65ac91:   83 42 1c 01 89 42 08 4d 85 e4 74 08 4c 89 e7 e8
+0x00007f1d7d65aca1:   1b 60 f7 ff 48 83 c4 08 4c 89 e8 5b 41 5c 41 5d
+0x00007f1d7d65acb1:   5d c3 0f 1f 44 00 00 01 5a 0c 45 31 ed eb d8 48
+0x00007f1d7d65acc1:   83 c4 08 45 31 ed 5b 4c 89 e8 41 5c 41 5d 5d c3
+0x00007f1d7d65acd1:   90 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3
+0x00007f1d7d65ace1:   0f 1e fa 48 8d 05 f5 d6 67 00 80 38 00 75 08 c3
+0x00007f1d7d65acf1:   0f 1f 80 00 00 00 00 55 48 89 e5 53 48 83 ec 08
+0x00007f1d7d65ad01:   48 8b 1d 10 ef 6d 00 e8 d3 87 fb ff 48 89 43 10
+0x00007f1d7d65ad11:   48 8b 5d f8 c9 c3 90 0f 1f 84 00 00 00 00 00 f3
+0x00007f1d7d65ad21:   0f 1e fa 55 48 89 e5 41 54 4c 8d 25 2f 35 6c 00
+0x00007f1d7d65ad31:   53 49 83 3c 24 00 74 4f 31 d2 be 08 00 00 00 bf
+0x00007f1d7d65ad41:   01 10 00 00 e8 06 df 73 ff 4d 8b 24 24 48 89 c3
+0x00007f1d7d65ad51:   4c 89 e7 e8 27 b7 5c ff b9 01 10 00 00 48 89 da
+0x00007f1d7d65ad61:   4c 89 e7 48 89 c6 e8 94 c8 74 ff 84 c0 74 10 48
+0x00007f1d7d65ad71:   89 d8 5b 41 5c 5d c3 0f 1f 84 00 00 00 00 00 48
+0x00007f1d7d65ad81:   89 df e8 18 e0 73 ff 31 d2 be 08 00 00 00 bf 16 
+
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007f1d7dd585a0, length=0, elements={
+}
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0x00007f1d78018140 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=7, stack(0x00007f1d7c540000,0x00007f1d7c640000)]
+
+Threads with active compile tasks:
+
+VM state: not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007f1d78015100] PerfDataMemAlloc_lock - owner thread: 0x00007f1d78018140
+
+Heap address: 0x0000000000000000, size: 0 MB, Compressed Oops mode: 32-bit
+
+CDS archive(s) mapped at: [0x0000000000000000-0x0000000000000000-0x0000000000000000), size 0, SharedBaseAddress: 0x0000000800000000, ArchiveRelocationMode: 1.
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 0, Narrow klass range: 0x0
+
+GC Precious Log:
+<Not initialized>
+
+Dll operation events (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Classes loaded (0 events):
+No events
+
+Classes unloaded (0 events):
+No events
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+VM Operations (0 events):
+No events
+
+Memory protections (1 events):
+Event: 0.001 Protecting memory [0x00007f1d7c540000,0x00007f1d7c544000] with protection modes 0
+
+Nmethod flushes (0 events):
+No events
+
+Events (0 events):
+No events
+
+
+Dynamic libraries:
+Can not get library information for pid = 7
+
+
+VM Arguments:
+jvm_args: -Xmx512M 
+java_command: core.DTNSim -b 1 CCN_Normal_configuration.txt validation/configs/pilot_Normal_80k.txt
+java_class_path (initial): target:lib/ECLA.jar:lib/DTNConsoleConnection.jar
+Launcher Type: SUN_STANDARD
+
+[Global flags]
+     uint ConcGCThreads                            = 2                                         {product} {ergonomic}
+     uint G1ConcRefinementThreads                  = 8                                         {product} {ergonomic}
+    uintx GCDrainStackTargetSize                   = 64                                        {product} {ergonomic}
+   size_t InitialHeapSize                          = 234881024                                 {product} {ergonomic}
+   size_t MarkStackSize                            = 4194304                                   {product} {ergonomic}
+   size_t MaxHeapSize                              = 536870912                                 {product} {command line}
+   size_t MinHeapSize                              = 6815736                                   {product} {ergonomic}
+    uintx ReservedCodeCacheSize                    = 251658240                              {pd product} {ergonomic}
+     bool SegmentedCodeCache                       = true                                      {product} {ergonomic}
+     bool UseCompressedClassPointers               = true                           {product lp64_product} {ergonomic}
+     bool UseCompressedOops                        = true                           {product lp64_product} {ergonomic}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+
+Logging:
+Log output configuration:
+ #0: stdout all=warning uptime,level,tags
+ #1: stderr all=off uptime,level,tags
+
+Environment Variables:
+PATH=/root/.codex/tmp/arg0/codex-arg0WppkTF:/opt/codex/codex-path:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback
+LANG=C.UTF-8
+LC_ALL=C.UTF-8
+LC_CTYPE=C.UTF-8
+TERM=dumb
+TZ=Europe/Stockholm
+
+Active Locale:
+LC_ALL=C
+LC_COLLATE=C
+LC_CTYPE=C
+LC_MESSAGES=C
+LC_MONETARY=C
+LC_NUMERIC=C
+LC_TIME=C
+
+Signal Handlers:
+   SIGSEGV: crash_handler in libjvm.so, mask=11100100010111111101111111111110, flags=SA_RESTART|SA_SIGINFO, unblocked
+    SIGBUS: crash_handler in libjvm.so, mask=11100100010111111101111111111110, flags=SA_RESTART|SA_SIGINFO, unblocked
+    SIGFPE: crash_handler in libjvm.so, mask=11100100010111111101111111111110, flags=SA_RESTART|SA_SIGINFO, unblocked
+   SIGPIPE: javaSignalHandler in libjvm.so, mask=11100100010111111101111111111110, flags=SA_RESTART|SA_SIGINFO, blocked
+   SIGXFSZ: javaSignalHandler in libjvm.so, mask=11100100010111111101111111111110, flags=SA_RESTART|SA_SIGINFO, blocked
+    SIGILL: crash_handler in libjvm.so, mask=11100100010111111101111111111110, flags=SA_RESTART|SA_SIGINFO, unblocked
+   SIGUSR2: SR_handler in libjvm.so, mask=00000000000000000000000000000000, flags=SA_RESTART|SA_SIGINFO, blocked
+    SIGHUP: SIG_DFL, mask=00000000000000000000000000000000, flags=none, blocked
+    SIGINT: SIG_DFL, mask=00000000000000000000000000000000, flags=none, blocked
+   SIGTERM: SIG_DFL, mask=00000000000000000000000000000000, flags=none, blocked
+   SIGQUIT: UserHandler in libjvm.so, mask=11100100010111111101111111111110, flags=SA_RESTART|SA_SIGINFO, blocked
+   SIGTRAP: crash_handler in libjvm.so, mask=11100100010111111101111111111110, flags=SA_RESTART|SA_SIGINFO, unblocked
+
+
+Periodic native trim disabled
+
+
+---------------  S Y S T E M  ---------------
+
+OS:
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=24.04
+DISTRIB_CODENAME=noble
+DISTRIB_DESCRIPTION="Ubuntu 24.04.3 LTS"
+uname: Linux 6.18.35 #1 SMP Mon Aug 31 18:10:37 UTC 2026 x86_64
+OS uptime: 0 days 0:17 hours
+libc: glibc 2.39 NPTL 2.39 
+rlimit (soft/hard): STACK 8192k/infinity , CORE 0k/infinity , NPROC 63985/63985 , NOFILE 16384/16384 , AS infinity/infinity , CPU infinity/infinity , DATA infinity/infinity , FSIZE infinity/infinity , MEMLOCK 8192k/8192k
+load average: 0.05 0.05 0.02
+
+/proc/meminfo:
+MemTotal:       16399700 kB
+MemFree:        15835936 kB
+MemAvailable:   15721080 kB
+Buffers:            8240 kB
+Cached:           150984 kB
+SwapCached:            0 kB
+Active:            42872 kB
+Inactive:         227688 kB
+Active(anon):      11084 kB
+Inactive(anon):   177876 kB
+Active(file):      31788 kB
+Inactive(file):    49812 kB
+Unevictable:       29840 kB
+Mlocked:               0 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:              2008 kB
+Writeback:             0 kB
+AnonPages:        141696 kB
+Mapped:            66632 kB
+Shmem:             47796 kB
+KReclaimable:      26180 kB
+Slab:              71412 kB
+SReclaimable:      26180 kB
+SUnreclaim:        45232 kB
+KernelStack:        3748 kB
+PageTables:         6480 kB
+SecPageTables:         0 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     8199848 kB
+Committed_AS:    1519244 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:        5076 kB
+VmallocChunk:          0 kB
+Percpu:             2736 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+Balloon:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:       49152 kB
+DirectMap2M:     3600384 kB
+DirectMap1G:    23068672 kB
+
+/sys/kernel/mm/transparent_hugepage/enabled: always [madvise] never
+/sys/kernel/mm/transparent_hugepage/hpage_pmd_size: 2097152
+/sys/kernel/mm/transparent_hugepage/defrag (defrag/compaction efforts parameter): always defer defer+madvise [madvise] never
+
+Process Memory:
+Virtual Size: 223204K (peak: 223204K)
+Resident Set Size: 11460K (peak: 11460K) (anon: 5784K, file: 5676K, shmem: 0K)
+Swapped out: 0K
+C-Heap outstanding allocations: 4406K, retained: 137K
+glibc malloc tunables: (default)
+
+/proc/sys/kernel/threads-max (system-wide limit on the number of threads): 127970
+/proc/sys/vm/max_map_count (maximum number of memory map areas a process may have): 65530
+/proc/sys/vm/swappiness (control to define how aggressively the kernel swaps out anonymous memory): 60
+/proc/sys/kernel/pid_max (system-wide limit on number of process identifiers): 4194304
+
+container (cgroup) information:
+container_type: cgroupv2
+cpu_cpuset_cpus: not supported
+cpu_memory_nodes: not supported
+active_processor_count: 8
+cpu_quota: 800000
+cpu_period: 100000
+cpu_shares: no shares
+memory_limit_in_bytes: 14680064 k
+memory_and_swap_limit_in_bytes: unlimited
+memory_soft_limit_in_bytes: 0
+memory_usage_in_bytes: 301004 k
+memory_max_usage_in_bytes: not supported
+rss_usage_in_bytes: 141408 k
+cache_usage_in_bytes: 126268 k
+memory_swap_current_in_bytes: 0
+memory_swap_max_limit_in_bytes: unlimited
+maximum number of tasks: unlimited
+current number of tasks: 87
+
+Steal ticks since vm start: 1
+Steal ticks percentage since vm start:  0.062
+
+CPU: total 9 (initial active 8) 
+CPU Model and flags from /proc/cpuinfo:
+model name	: AMD EPYC 9V74 80-Core Processor
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities
+
+Online cpus: 0-8
+Offline cpus: 
+BIOS frequency limitation: <Not Available>
+Frequency switch latency (ns): <Not Available>
+Available cpu frequencies: <Not Available>
+Current governor: <Not Available>
+Core performance/turbo boost: <Not Available>
+
+Memory: 4k page, physical 14680064k(14378548k free), swap 0k(0k free)
+Page Sizes: 4k
+
+vm_info: OpenJDK 64-Bit Server VM (17.0.20+8-1-24.04-Ubuntu) for linux-amd64 JRE (17.0.20+8-1-24.04-Ubuntu), built on Jul 23 2026 14:19:04 by "buildd" with gcc 13.3.0
+
+END.

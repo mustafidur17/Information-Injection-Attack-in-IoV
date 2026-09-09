@@ -1,0 +1,20 @@
+Message stats for scenario Pilot6h_Attack_Int600_TTL180_Buf80k_Seed1
+sim_time: 21600.1000
+created: 352
+started: 136073
+relayed: 136072
+aborted: 0
+dropped: 5976
+removed: 122764
+delivered: 179
+delivery_prob: 0.5085
+response_prob: 0.0000
+overhead_ratio: 759.1788
+latency_avg: 881.3385
+latency_med: 670.5000
+hopcount_avg: 9.0838
+hopcount_med: 5
+buffertime_avg: 491.7664
+buffertime_med: 131.6000
+rtt_avg: NaN
+rtt_med: NaN

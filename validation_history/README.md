@@ -1,0 +1,1 @@
+Historical evidence only. The isolated_poisoning folder belongs to the previous model with Epidemic Group 5 in both scenarios. Use the top-level current documents and validation/ reports for the new benign FirstContact vs malicious Epidemic experiment.

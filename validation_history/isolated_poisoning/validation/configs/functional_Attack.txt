@@ -1,0 +1,15 @@
+Settings.cartesianRunSettings =
+Scenario.name = Functional_Attack
+Scenario.endTime = 100
+SinkCCN.interval = 1
+SinkCCN.queryRange = 1,2
+Group.bufferSize = 5k
+Group.msgTtl = 180
+MovementModel.rngSeed = 1
+SinkCCN.interestSize = 73
+SinkCCN.contentSize = 211
+RelayCCN.contentSize = 211
+SourceCCN.contentSize = 211
+ControlSourceCCN.contentSize = 211
+MaliciousCCN.contentSize = 211
+Report.reportDir = validation/functional_reports/

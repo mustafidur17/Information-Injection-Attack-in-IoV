@@ -14,7 +14,7 @@ import core.SimClock;
 
 public class MaliciousCCN_application_reporter extends Report implements ApplicationListener {
 
-	private int oppo_cahce_hit=0;
+	private int oppo_cache_hit=0;
 	private int oppo_cache_miss=0;
 	private int query_count=0;
 	private int static_cache_hit=0;
@@ -29,7 +29,7 @@ public class MaliciousCCN_application_reporter extends Report implements Applica
 	private int max_cache_occupancy = 0;
 	private int max_false_content_in_cache = 0;
 	private double max_false_cache_ratio = 0.0;
-	private int total_interval=0;
+	private double total_interval=0.0;
 	private int num_got_response = 0;
 	private int msg_forwarded = 0;
 	private int response_from_other = 0;
@@ -98,7 +98,7 @@ public class MaliciousCCN_application_reporter extends Report implements Applica
 	public void gotEvent(String event, Object params, Application app,
 			DTNHost host) {
 		if (event.equals("oppoCacheHit")) {
-			this.oppo_cahce_hit++;
+			this.oppo_cache_hit++;
 		}
 		
 		if (event.equals("forwardingStopList")) {
@@ -178,7 +178,7 @@ public class MaliciousCCN_application_reporter extends Report implements Applica
 		if (event.equals("OriginalGotResponse")) {
 			this.response_count++;
 			
-			int position = locate_query_key((String)params);
+			int position = locate_query_key((String)params, host.toString());
 			if(position != -1){
 				msg_record.get(position).setReceivedTime(SimClock.getTime());
 				msg_record.get(position).setGotResponse(true);
@@ -212,14 +212,17 @@ public class MaliciousCCN_application_reporter extends Report implements Applica
 	}
 	
 	void print_state(){
-		System.out.println("\r this.oppo_cahce_hit = " + this.oppo_cahce_hit);
+		System.out.println("\r this.oppo_cache_hit = " + this.oppo_cache_hit);
 		System.out.print("\r this.oppo_cache_miss = " + this.oppo_cache_miss);
 	}
 	
-	public int locate_query_key(String key){
-		for(MessageRecoder ms: msg_record){
-			if(ms.getQueryKey().equals(key))
-				return msg_record.indexOf(ms);
+	public int locate_query_key(String key, String hostName){
+		for(int i = 0; i < msg_record.size(); i++){
+			MessageRecoder ms = msg_record.get(i);
+			if(!ms.getGotResponse() && ms.getQueryKey().equals(key) &&
+					ms.getHostName().equals(hostName)){
+				return i;
+			}
 		}
 		return -1;
 	}
@@ -227,6 +230,7 @@ public class MaliciousCCN_application_reporter extends Report implements Applica
 	
 	
 	public void calTotalInterval(){
+		total_interval = 0.0;
 		for(MessageRecoder ms : msg_record){
 			if(ms.getGotResponse() == true){
 				total_interval += ms.getInterval();
@@ -248,16 +252,18 @@ public class MaliciousCCN_application_reporter extends Report implements Applica
           falseContentReceptionRatio = (double) this.false_content_received / totalContentReceived;
         }
 
-		write("WebApp stats for scenario " + getScenarioName() + 
+		write("MaliciousCCN application reporter for scenario " + getScenarioName() + 
 				"\nsim_time: " + format(getSimTime()));
 		
 		calTotalInterval();
-		if(num_got_response == 0){
-			num_got_response = 1;
-		}
+		double averageInterval = num_got_response == 0 ? 0.0 :
+				this.total_interval / this.num_got_response;
 		
+		double legitimateContentSatisfactionRatio = query_count == 0 ? 0.0 :
+				(double) legitimate_content_received / query_count;
+
 		String statsText = 
-			"\noppo_cahce_hit: " + this.oppo_cahce_hit + 
+			"\noppo_cache_hit: " + this.oppo_cache_hit + 
 			"\noppo_cache_miss: " + this.oppo_cache_miss +
 			"\ndrop_list:  "		    + this.forwarding_Stop_l+
 			"\ndrop_pit:  "		    + this.forwarding_Stop_p+
@@ -272,6 +278,7 @@ public class MaliciousCCN_application_reporter extends Report implements Applica
 			"\nfalse_content_received: " + this.false_content_received +
             "\nlegitimate_content_received: " + this.legitimate_content_received +
 			"\nfalse_content_reception_ratio: " + falseContentReceptionRatio +
+			"\nlegitimate_content_satisfaction_ratio: " + legitimateContentSatisfactionRatio +
 			"\ntotal_cache_evictions: " + this.total_cache_evictions +
 			"\nlegitimate_content_evicted_by_false: " +
 					this.legitimate_content_evicted_by_false +
@@ -281,7 +288,7 @@ public class MaliciousCCN_application_reporter extends Report implements Applica
 			"\nmax_false_cache_ratio: " + this.max_false_cache_ratio +
 			//"\nresource found: " + this.res_found + 
 			//"\nmsg_forwarded: " + this.msg_forwarded +
-			"\naverage_interval: " + this.total_interval/this.num_got_response
+			"\naverage_interval: " + averageInterval
 			;
 		
 		write(statsText);

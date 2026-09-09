@@ -30,6 +30,8 @@ import java.util.Arrays;
  */
 
 public class CCN_application extends Application {
+	private static final boolean DEBUG = false;
+
 	static {
 		  DTNSim.registerForReset(CCN_application.class.getCanonicalName());
 		  reset();
@@ -160,7 +162,7 @@ public class CCN_application extends Application {
 	 */
 	public CCN_application(Settings s) {
 		//test code
-		System.out.println("Creating application from setting only once");
+		print("Creating application from setting only once");
 		
 		if (s.contains(CCN_PASSIVE)){
 			this.passive = s.getBoolean(CCN_PASSIVE);
@@ -306,7 +308,7 @@ public class CCN_application extends Application {
 			= new HashMap<Integer, String>();
 		}
 		
-		System.out.println("Init static cache for host "+ h +  "if value is " + true_static_cache);
+		print("Init static cache for host "+ h +  "if value is " + true_static_cache);
 		if(true_static_cache >= 1){
 			/** initialize static_cache */
 			//get the num of the host since the host num starting from 0
@@ -315,14 +317,14 @@ public class CCN_application extends Application {
 			int num_of_hosts = SimScenario.getInstance().getWorld().getHosts().size();
 			//calculate the range of values for every host
 			int range = (static_cache_value_Max - static_cache_value_Min)/num_of_hosts + 1;
-			System.out.println("Init static cache: "+ num_of_hosts + " why range: "+ range);
+			print("Init static cache: "+ num_of_hosts + " why range: "+ range);
 			//distribution setting: all 1-20
 			int max_range = static_cache_value_Max;
 			int min_range = static_cache_value_Min;
 			num_of_hosts = 1;
 			
 			//test code
-			System.out.println("Host:  range max: + mim " + max_range + " " + min_range);
+			print("Host:  range max: + mim " + max_range + " " + min_range);
 			
 			Random rng_static_cache = new Random(this.seed_for_create_static_cache + seed_from_host);
 			
@@ -335,7 +337,7 @@ public class CCN_application extends Application {
 				static_cache.put(temp, new Integer(i+1).toString());
 			}
 			//test code
-			System.out.println();			
+			print("");
 		}
 	}
 	
@@ -400,6 +402,9 @@ public class CCN_application extends Application {
 	 */
 
 	void print_PIT(DTNHost Host){
+		if (!DEBUG) {
+			return;
+		}
 		System.out.print(Host+ "# ");
 		for(Integer query_key : this.PIT.keySet()){
 			System.out.print(query_key + ":" + this.PIT.get(query_key).getHostToSendList() + ", ");
@@ -419,7 +424,7 @@ public class CCN_application extends Application {
 	public Message handle(Message msg, DTNHost host) {
 		String type = (String)msg.getProperty("type");
 
-		System.out.println("in message handle : " + host);
+		print("in message handle : " + host);
 
 		if(type == null) return msg; //Not a valid msg
 		
@@ -493,7 +498,7 @@ public class CCN_application extends Application {
 			
 			
 			if(msg.getTo() == host){
-				if(hostsTo.size() > 1){
+				if(hostsTo.size() > 0){
 					////there are more hosts to send(just pick the first one)
 					msg.setTo(getHostByName(hostsTo.get(0)));
 					hostsTo.remove(0);
@@ -507,7 +512,6 @@ public class CCN_application extends Application {
 					}
 					
 					msg.updateProperty("hostsTo", hostsToString);
-					host.createNewMessage(msg);
 				}
 				else{
 					//test code
@@ -632,13 +636,13 @@ public class CCN_application extends Application {
 					super.sendEventToListeners("staticCacheHit", null, host);
 					
 					//test code
-					System.out.println(host + ":[static hit] for [" + query_key +  "] visited hosts: " + msg.getHops());
+					print(host + ":[static hit] for [" + query_key +  "] visited hosts: " + msg.getHops());
 				}
 			}
 			
 			if(msg.getTo() == host){
 				boolean flag_send = true;
-				Message response_msg = new Message(host, msg.getFrom(), "queryResponse" + SimClock.getIntTime() + "-" + host.getAddress(), getInterestSize()*3); //the size of response msg is 3 times of the query msg
+				Message response_msg = new Message(host, msg.getFrom(), "queryResponse-" + host.getAddress() + "-" + msg.getId(), getContentSize());
 				if(retrieved_value_from_static.isEmpty() == false ){
 					response_msg.addProperty(
 							"content", retrieved_value_from_static);
@@ -662,7 +666,6 @@ public class CCN_application extends Application {
 					}while(host_to_send == host || host_to_send == msg.getFrom());
 					
 					msg.setTo(host_to_send);
-					host.createNewMessage(msg);
 					
 					//test code
 				//	System.out.println(host + ": I don't have the content of [" + query_key + "]. I will retransmit it to " + host_to_send + ". It visits " + msg.getHops());
@@ -680,7 +683,7 @@ public class CCN_application extends Application {
 			}else{
 				//intermedia node
 				boolean flag_to_send = false;
-				Message response_msg = new Message(host, msg.getFrom(), "queryResponse" + SimClock.getIntTime() + "-" + host.getAddress(), getInterestSize()*3);
+				Message response_msg = new Message(host, msg.getFrom(), "queryResponse-" + host.getAddress() + "-" + msg.getId(), getContentSize());
 				
 				//test code
 				print(host + ":lol:" + this.enablePIT);
@@ -694,7 +697,7 @@ public class CCN_application extends Application {
 						this.PIT.put(request_in_int, temp_hostToSend);
 						
 						//test code
-						System.out.println(host + ": add new entry, PIT size:" + PIT.size());
+						print(host + ": add new entry, PIT size:" + PIT.size());
 						print_PIT(host);
 					}
 					else{
@@ -704,7 +707,7 @@ public class CCN_application extends Application {
 						this.PIT.put(request_in_int, temp_hostToSend);
 						
 						//test code
-						System.out.println(host + ": update entry, PIT size:" + PIT.size());
+						print(host + ": update entry, PIT size:" + PIT.size());
 				//		print_PIT(host);
 						super.sendEventToListeners("forwardingStopListPIT", null, host);
 						return null;
@@ -842,18 +845,8 @@ private DTNHost randomHost(DTNHost host) {
 						Ini_oppo_cache();
 					
 					if(rng_query == null && queryDistribution == 1){
-						//accept the num in the name of host to act as an parameter to generate query
 						int seed_from_host = 3 * host.getAddress() + 1;
-						
-						//rng_query = new Random(seed_for_query + seed_from_host);
-						rng_query = new Random(seed_for_query); /// generating the same query for all nodes
-						
-						//Sleep for 0.3 seconds
-						try {
-						    Thread.sleep(300);
-						} catch (InterruptedException e) {
-						    e.printStackTrace();
-						}
+						rng_query = new Random(seed_for_query + seed_from_host);
 					}
 						
 					//check does current host itself already has the resource or not
@@ -1112,7 +1105,9 @@ private DTNHost randomHost(DTNHost host) {
 	}
 	
 	public void print(Object content){
-		System.out.println(content);
+		if (DEBUG) {
+			System.out.println(content);
+		}
 	}
 	
 	public boolean checkProcessedMsgList(Message msg){
@@ -1173,7 +1168,7 @@ private DTNHost randomHost(DTNHost host) {
 			popularContent[i] = content_generator.nextInt(query_range_Max - query_range_Min) + query_range_Min;			
 		//	System.out.print(popularContent[i] + " ");
 		}
-		System.out.println("\n Done Generating popular content list");
+		print("\n Done Generating popular content list");
 	}
 	
 	
@@ -1233,4 +1228,3 @@ private DTNHost randomHost(DTNHost host) {
 		return popularContent[contentRank];
 	}
 }
-

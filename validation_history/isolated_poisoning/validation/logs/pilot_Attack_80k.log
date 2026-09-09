@@ -1,0 +1,7 @@
+[0.001s][warning][perf,memops] Cannot use file /tmp/hsperfdata_root/6 because it is locked by another process (errno = 11)
+Run 1/1
+Running simulation 'Pilot6h_Attack_Int600_TTL180_Buf80k_Seed1'
+15.7 21600: 1375.36 1/s
+Simulation done in 15.62s
+---
+All done in 16.20s

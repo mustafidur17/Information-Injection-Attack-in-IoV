@@ -1,0 +1,1 @@
+PASS: Normal producer -> pure/CCN routers -> intermediate cache -> later cached response -> consumer; marker survives; sizes 73/211; unique same-second IDs; direct and overheard generation counted; response conservation; one remaining recipient; bounded LRU metadata.

@@ -1,0 +1,5 @@
+Normal 5k vs 80k changed: created, started, relayed, dropped, removed, delivery_prob, overhead_ratio, latency_avg, latency_med, hopcount_avg, buffertime_avg
+Attack 5k vs 80k changed: created, started, relayed, dropped, removed, delivery_prob, overhead_ratio, latency_avg, latency_med, hopcount_avg, buffertime_avg
+Observed paired transport metrics identical at 5k: True
+Observed paired transport metrics identical at 80k: True
+PASS: schemas, all CCN/DTN required fields, ratios, conservation, clean Normal, active Attack, bounded cache metrics, buffer sensitivity, fractional averages, zero denominators and 150 paired settings.

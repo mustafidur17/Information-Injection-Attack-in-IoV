@@ -30,6 +30,8 @@ import java.util.Arrays;
  */
 
 public class MaliciousCCN_application extends Application {
+	private static final boolean DEBUG = false;
+
 	static {
 		  DTNSim.registerForReset(MaliciousCCN_application.class.getCanonicalName());
 		  reset();
@@ -160,7 +162,7 @@ public class MaliciousCCN_application extends Application {
 	 */
 	public MaliciousCCN_application(Settings s) {
 		//test code
-		System.out.println("Creating application from setting only once");
+		print("Creating application from setting only once");
 		
 		if (s.contains(CCN_PASSIVE)){
 			this.passive = s.getBoolean(CCN_PASSIVE);
@@ -306,7 +308,7 @@ public class MaliciousCCN_application extends Application {
 			= new HashMap<Integer, String>();
 		}
 		
-		System.out.println("Init static cache for host "+ h +  "if value is " + true_static_cache);
+		print("Init static cache for host "+ h +  "if value is " + true_static_cache);
 		if(true_static_cache >= 1){
 			/** initialize static_cache */
 			//get the num of the host since the host num starting from 0
@@ -315,14 +317,14 @@ public class MaliciousCCN_application extends Application {
 			int num_of_hosts = SimScenario.getInstance().getWorld().getHosts().size();
 			//calculate the range of values for every host
 			int range = (static_cache_value_Max - static_cache_value_Min)/num_of_hosts + 1;
-			System.out.println("Init static cache: "+ num_of_hosts + " why range: "+ range);
+			print("Init static cache: "+ num_of_hosts + " why range: "+ range);
 			//distribution setting: all 1-20
 			int max_range = static_cache_value_Max;
 			int min_range = static_cache_value_Min;
 			num_of_hosts = 1;
 			
 			//test code
-			System.out.println("Host:  range max: + mim " + max_range + " " + min_range);
+			print("Host:  range max: + mim " + max_range + " " + min_range);
 			
 			Random rng_static_cache = new Random(this.seed_for_create_static_cache + seed_from_host);
 			
@@ -335,7 +337,7 @@ public class MaliciousCCN_application extends Application {
 				static_cache.put(temp, "FALSE_TRAFFIC_CONTENT_" + temp);
 			}
 			//test code
-			System.out.println();			
+			print("");
 		}
 	}
 	
@@ -400,6 +402,9 @@ public class MaliciousCCN_application extends Application {
 	 */
 
 	void print_PIT(DTNHost Host){
+		if (!DEBUG) {
+			return;
+		}
 		System.out.print(Host+ "# ");
 		for(Integer query_key : this.PIT.keySet()){
 			System.out.print(query_key + ":" + this.PIT.get(query_key).getHostToSendList() + ", ");
@@ -419,7 +424,7 @@ public class MaliciousCCN_application extends Application {
 	public Message handle(Message msg, DTNHost host) {
 		String type = (String)msg.getProperty("type");
 
-		System.out.println("in message handle : " + host);
+		print("in message handle : " + host);
 
 		if(type == null) return msg; //Not a valid msg
 		
@@ -463,11 +468,24 @@ public class MaliciousCCN_application extends Application {
 				if(this.query_record == null){
 					query_record = new HashMap<Integer, Integer>();
 				}
-				if(this.query_record.get( response_key_in_int) != null && this.query_record.get( response_key_in_int ) != 1){
-					super.sendEventToListeners("OriginalGotResponse", query_key_of_response, host);
-//					this.query_record.put(response_key_in_int, 1);
-					this.query_record.remove(response_key_in_int);					
-				}			
+		    if(this.query_record.get(response_key_in_int) != null &&
+               this.query_record.get(response_key_in_int) != 1){
+            String receivedContent = (String) msg.getProperty("content");
+
+            if(receivedContent != null &&  receivedContent.startsWith("FALSE_TRAFFIC_CONTENT_")) {
+               super.sendEventToListeners("FalseContentReceived", query_key_of_response, host);
+            }
+            else { super.sendEventToListeners(
+            "LegitimateContentReceived",
+            query_key_of_response,  host);
+            }
+
+        super.sendEventToListeners(
+        "OriginalGotResponse", query_key_of_response, host
+	        );
+
+    this.query_record.remove(response_key_in_int);
+}			
 			}
 			//update hostsTo property
 			ArrayList<String> hostsTo = new ArrayList<String>(getHostsTo(msg));
@@ -480,7 +498,7 @@ public class MaliciousCCN_application extends Application {
 			
 			
 			if(msg.getTo() == host){
-				if(hostsTo.size() > 1){
+				if(hostsTo.size() > 0){
 					////there are more hosts to send(just pick the first one)
 					msg.setTo(getHostByName(hostsTo.get(0)));
 					hostsTo.remove(0);
@@ -494,7 +512,6 @@ public class MaliciousCCN_application extends Application {
 					}
 					
 					msg.updateProperty("hostsTo", hostsToString);
-					host.createNewMessage(msg);
 				}
 				else{
 					//test code
@@ -552,9 +569,35 @@ public class MaliciousCCN_application extends Application {
 				this.PIT.remove(request_in_int);
 			}
 			
-			//add the response to the oppo cache
-			oppo_cache.set( request_in_int, (String)msg.getProperty("content") );
-			
+			// Add the response to the bounded LRU opportunity cache
+			String incomingContent = (String)msg.getProperty("content");
+			oppo_cache.set(request_in_int, incomingContent);
+
+			String evictedContent = oppo_cache.getLastEvictedValue();
+			boolean incomingFalse = isFalseContent(incomingContent);
+
+			if (incomingFalse) {
+				super.sendEventToListeners(
+						"FalseContentCached", request_in_int, host);
+			}
+
+			if (evictedContent != null) {
+				super.sendEventToListeners(
+						"CacheEviction", evictedContent, host);
+				if (incomingFalse && !isFalseContent(evictedContent)) {
+					super.sendEventToListeners(
+							"LegitimateContentEvictedByFalse",
+							evictedContent, host);
+				}
+			}
+
+			int[] cacheState = {
+				oppo_cache.get_len(),
+				oppo_cache.countFalseContent(),
+				oppo_cache.getCapacity()
+			};
+			super.sendEventToListeners("CacheState", cacheState, host);
+
 			//if I am an intermedia node, i should add the response to my static cache also
 			if(this.mode == 3 && true_static_cache == 1){
 				if( static_cache.get(request_in_int) == null){
@@ -593,19 +636,20 @@ public class MaliciousCCN_application extends Application {
 					super.sendEventToListeners("staticCacheHit", null, host);
 					
 					//test code
-					System.out.println(host + ":[static hit] for [" + query_key +  "] visited hosts: " + msg.getHops());
+					print(host + ":[static hit] for [" + query_key +  "] visited hosts: " + msg.getHops());
 				}
 			}
 			
 			if(msg.getTo() == host){
 				boolean flag_send = true;
-				Message response_msg = new Message(host, msg.getFrom(), "queryResponse" + SimClock.getIntTime() + "-" + host.getAddress(), getInterestSize()*3); //the size of response msg is 3 times of the query msg
+				Message response_msg = new Message(host, msg.getFrom(), "queryResponse-" + host.getAddress() + "-" + msg.getId(), getContentSize());
 				if(retrieved_value_from_static.isEmpty() == false ){
                     response_msg.addProperty("content", retrieved_value_from_static);
-                    response_msg.addProperty("isFalseContent", true);
+                    response_msg.addProperty("isFalseContent", isFalseContent(retrieved_value_from_static));
                 }
 				else if(retrieved_value_from_oppo.isEmpty() == false){
 					response_msg.addProperty("content", retrieved_value_from_oppo);
+					response_msg.addProperty("isFalseContent", isFalseContent(retrieved_value_from_oppo));
 				}
 				else{
 					//msg.addProperty("content", "");
@@ -616,7 +660,6 @@ public class MaliciousCCN_application extends Application {
 					}while(host_to_send == host || host_to_send == msg.getFrom());
 					
 					msg.setTo(host_to_send);
-					host.createNewMessage(msg);
 					
 					//test code
 				//	System.out.println(host + ": I don't have the content of [" + query_key + "]. I will retransmit it to " + host_to_send + ". It visits " + msg.getHops());
@@ -626,11 +669,11 @@ public class MaliciousCCN_application extends Application {
 					response_msg.addProperty("queryMsg", (String)msg.getProperty("queryMsg"));
 					response_msg.setAppID(APP_ID);
 
-				if (!retrieved_value_from_static.isEmpty()) {
-					super.sendEventToListeners("FalseContentGenerated", query_key, host);
-                }
 
 					host.createNewMessage(response_msg);
+					if (isFalseContent(retrieved_value_from_static)) {
+						super.sendEventToListeners("FalseContentGenerated", query_key, host);
+					}
 				
 				//	print(host + ": drop [" + type + "] msg =[" + msg.getProperty("queryMsg") +"] id =[" + msg.toString() + "] from " + msg.getFrom() + " to " + msg.getTo() + " visited hosts:" + " total:" + msg.getHopCount() + msg.getHops());
 					//drop current msg
@@ -639,7 +682,7 @@ public class MaliciousCCN_application extends Application {
 			}else{
 				//intermedia node
 				boolean flag_to_send = false;
-				Message response_msg = new Message(host, msg.getFrom(), "queryResponse" + SimClock.getIntTime() + "-" + host.getAddress(), getInterestSize()*3);
+				Message response_msg = new Message(host, msg.getFrom(), "queryResponse-" + host.getAddress() + "-" + msg.getId(), getContentSize());
 				
 				//test code
 				print(host + ":lol:" + this.enablePIT);
@@ -653,7 +696,7 @@ public class MaliciousCCN_application extends Application {
 						this.PIT.put(request_in_int, temp_hostToSend);
 						
 						//test code
-						System.out.println(host + ": add new entry, PIT size:" + PIT.size());
+						print(host + ": add new entry, PIT size:" + PIT.size());
 						print_PIT(host);
 					}
 					else{
@@ -663,7 +706,7 @@ public class MaliciousCCN_application extends Application {
 						this.PIT.put(request_in_int, temp_hostToSend);
 						
 						//test code
-						System.out.println(host + ": update entry, PIT size:" + PIT.size());
+						print(host + ": update entry, PIT size:" + PIT.size());
 				//		print_PIT(host);
 						super.sendEventToListeners("forwardingStopListPIT", null, host);
 						return null;
@@ -671,11 +714,12 @@ public class MaliciousCCN_application extends Application {
 				}
 				else if(retrieved_value_from_static.isEmpty() == false){
                     response_msg.addProperty("content", retrieved_value_from_static);
-                    response_msg.addProperty("isFalseContent", true);
+                    response_msg.addProperty("isFalseContent", isFalseContent(retrieved_value_from_static));
                     flag_to_send = true;
                 }
 				else if(retrieved_value_from_oppo.isEmpty() == false){
 					response_msg.addProperty("content", retrieved_value_from_oppo);
+					response_msg.addProperty("isFalseContent", isFalseContent(retrieved_value_from_oppo));
 					flag_to_send = true;
 				}
 				
@@ -684,6 +728,9 @@ public class MaliciousCCN_application extends Application {
 					response_msg.addProperty("queryMsg", (String)msg.getProperty("queryMsg"));
 					response_msg.setAppID(APP_ID);
 					host.createNewMessage(response_msg);
+					if (isFalseContent(retrieved_value_from_static)) {
+						super.sendEventToListeners("FalseContentGenerated", query_key, host);
+					}
 					
 				//	print(host + ": drop [" + type + "] msg =[" + msg.getProperty("queryMsg") +"] id =[" + msg.toString() + "] from " + msg.getFrom() + " to " + msg.getTo() + " visited hosts:" + " total:" + msg.getHopCount() + msg.getHops());
 					//drop current msg
@@ -700,23 +747,21 @@ public class MaliciousCCN_application extends Application {
 	 * 
 	 * @return host
 	 */
-	private DTNHost randomHost(DTNHost host) {
-		if(this.rng == null){
-			this.rng = new Random(this.seed + 2 * host.getAddress());
-			//test code;
-			//System.out.println(host + ": rng empty ");
-		}
-		
-		World w = SimScenario.getInstance().getWorld();
-		int destaddr =  -1;
-		do{
-			destaddr = this.rng.nextInt(w.getHosts().size());			
-			//test code;
-			//System.out.println(host + ": generating destaddr = " + destaddr);
-		}while(w.getNodeByAddress(destaddr) == host);
-		
-		return w.getNodeByAddress(destaddr);
-	}
+private DTNHost randomHost(DTNHost host) {
+    if (this.rng == null) {
+        this.rng = new Random(this.seed + 2 * host.getAddress());
+    }
+
+    World w = SimScenario.getInstance().getWorld();
+    int destaddr;
+
+    do {
+        destaddr = this.destMin +
+                this.rng.nextInt(this.destMax - this.destMin);
+    } while (w.getNodeByAddress(destaddr) == host);
+
+    return w.getNodeByAddress(destaddr);
+}
 	
 	@Override
 	public Application replicate() {
@@ -799,18 +844,8 @@ public class MaliciousCCN_application extends Application {
 						Ini_oppo_cache();
 					
 					if(rng_query == null && queryDistribution == 1){
-						//accept the num in the name of host to act as an parameter to generate query
 						int seed_from_host = 3 * host.getAddress() + 1;
-						
-						//rng_query = new Random(seed_for_query + seed_from_host);
-						rng_query = new Random(seed_for_query); /// generating the same query for all nodes
-						
-						//Sleep for 0.3 seconds
-						try {
-						    Thread.sleep(300);
-						} catch (InterruptedException e) {
-						    e.printStackTrace();
-						}
+						rng_query = new Random(seed_for_query + seed_from_host);
 					}
 						
 					//check does current host itself already has the resource or not
@@ -991,6 +1026,11 @@ public class MaliciousCCN_application extends Application {
 	/**
 	* @return the cache capacity
 	*/
+	private boolean isFalseContent(String content) {
+		return content != null &&
+				content.startsWith("FALSE_TRAFFIC_CONTENT_");
+	}
+
 	public int getCacheCapacity(){
 		return this.capacity_of_cache;
 	}
@@ -1064,7 +1104,9 @@ public class MaliciousCCN_application extends Application {
 	}
 	
 	public void print(Object content){
-		System.out.println(content);
+		if (DEBUG) {
+			System.out.println(content);
+		}
 	}
 	
 	public boolean checkProcessedMsgList(Message msg){
@@ -1125,7 +1167,7 @@ public class MaliciousCCN_application extends Application {
 			popularContent[i] = content_generator.nextInt(query_range_Max - query_range_Min) + query_range_Min;			
 		//	System.out.print(popularContent[i] + " ");
 		}
-		System.out.println("\n Done Generating popular content list");
+		print("\n Done Generating popular content list");
 	}
 	
 	
@@ -1185,4 +1227,3 @@ public class MaliciousCCN_application extends Application {
 		return popularContent[contentRank];
 	}
 }
-
