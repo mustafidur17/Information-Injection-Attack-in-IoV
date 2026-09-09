@@ -1,0 +1,25 @@
+MaliciousCCN application reporter for scenario Malicious_injection_24h_Int1500_TTL240_Buf5k_Seed2
+sim_time: 86400.0000
+
+oppo_cache_hit: 5
+oppo_cache_miss: 894
+drop_list:  0
+drop_pit:  9
+drop_nonce:  4537
+query_count: 309
+duplicated_query: 33
+static_cache_hit: 283
+static_cache_miss: 198
+response_count: 293
+false_content_generated: 222
+false_content_cached: 4263
+false_content_received: 235
+legitimate_content_received: 58
+false_content_reception_ratio: 0.8020477815699659
+legitimate_content_satisfaction_ratio: 0.18770226537216828
+total_cache_evictions: 4696
+legitimate_content_evicted_by_false: 654
+max_cache_occupancy: 10
+max_false_content_in_cache: 10
+max_false_cache_ratio: 1.0
+average_interval: 2229.817064857669
