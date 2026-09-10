@@ -1,0 +1,20 @@
+Message stats for scenario Malicious_injection_24h_Int600_TTL120_Buf5k_Seed1
+sim_time: 86400.0000
+created: 1396
+started: 785229
+relayed: 785228
+aborted: 0
+dropped: 69841
+removed: 703670
+delivered: 711
+delivery_prob: 0.5093
+response_prob: 0.0000
+overhead_ratio: 1103.3994
+latency_avg: 926.6384
+latency_med: 742.8000
+hopcount_avg: 9.2068
+hopcount_med: 6
+buffertime_avg: 170.9409
+buffertime_med: 93.7000
+rtt_avg: NaN
+rtt_med: NaN
