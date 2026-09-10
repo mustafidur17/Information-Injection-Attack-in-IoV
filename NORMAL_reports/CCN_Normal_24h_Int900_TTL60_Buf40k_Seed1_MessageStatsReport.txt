@@ -1,0 +1,20 @@
+Message stats for scenario CCN_Normal_24h_Int900_TTL60_Buf40k_Seed1
+sim_time: 86400.0000
+created: 781
+started: 16122
+relayed: 16122
+aborted: 0
+dropped: 174
+removed: 16122
+delivered: 202
+delivery_prob: 0.2586
+response_prob: 0.0000
+overhead_ratio: 78.8119
+latency_avg: 1095.1931
+latency_med: 780.2000
+hopcount_avg: 17.6584
+hopcount_med: 15
+buffertime_avg: 70.9413
+buffertime_med: 39.3000
+rtt_avg: NaN
+rtt_med: NaN
