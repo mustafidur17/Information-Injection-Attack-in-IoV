@@ -182,7 +182,8 @@
     178,
     179,
     180,
-    181
+    181,
+    182
   ],
   "Attack_completed": [
     0,
@@ -291,5 +292,5 @@
   ],
   "Normal_failed": [],
   "Attack_failed": [],
-  "Last_update_bd": "10 Sep 2026, 06:32 AM"
+  "Last_update_bd": "10 Sep 2026, 06:33 AM"
 }
