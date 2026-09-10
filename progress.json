@@ -174,7 +174,8 @@
     170,
     171,
     172,
-    173
+    173,
+    174
   ],
   "Attack_completed": [
     0,
@@ -278,5 +279,5 @@
   ],
   "Normal_failed": [],
   "Attack_failed": [],
-  "Last_update_bd": "10 Sep 2026, 06:24 AM"
+  "Last_update_bd": "10 Sep 2026, 06:25 AM"
 }
