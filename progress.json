@@ -155,7 +155,8 @@
     151,
     152,
     153,
-    154
+    154,
+    155
   ],
   "Attack_completed": [
     0,
@@ -244,5 +245,5 @@
   ],
   "Normal_failed": [],
   "Attack_failed": [],
-  "Last_update_bd": "13 Sep 2026, 09:40 PM"
+  "Last_update_bd": "13 Sep 2026, 09:41 PM"
 }
