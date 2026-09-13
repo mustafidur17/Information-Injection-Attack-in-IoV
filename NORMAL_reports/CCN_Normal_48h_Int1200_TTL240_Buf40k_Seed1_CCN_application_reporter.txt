@@ -1,0 +1,25 @@
+CCN application reporter for scenario CCN_Normal_48h_Int1200_TTL240_Buf40k_Seed1
+sim_time: 172800.0000
+
+oppo_cache_hit: 76
+oppo_cache_miss: 1820
+drop_list:  0
+drop_pit:  151
+drop_nonce:  0
+query_count: 701
+duplicated_query: 157
+static_cache_hit: 544
+static_cache_miss: 481
+response_count: 628
+false_content_generated: 0
+false_content_cached: 0
+false_content_received: 0
+legitimate_content_received: 628
+false_content_reception_ratio: 0.0
+legitimate_content_satisfaction_ratio: 0.8958630527817404
+total_cache_evictions: 5282
+legitimate_content_evicted_by_false: 0
+max_cache_occupancy: 10
+max_false_content_in_cache: 0
+max_false_cache_ratio: 0.0
+average_interval: 7796.405095821534
