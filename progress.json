@@ -120,7 +120,8 @@
     116,
     117,
     118,
-    119
+    119,
+    120
   ],
   "Attack_completed": [
     0,
@@ -192,5 +193,5 @@
   ],
   "Normal_failed": [],
   "Attack_failed": [],
-  "Last_update_bd": "13 Sep 2026, 08:37 PM"
+  "Last_update_bd": "13 Sep 2026, 08:39 PM"
 }
