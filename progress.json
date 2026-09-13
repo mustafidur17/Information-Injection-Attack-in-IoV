@@ -77,7 +77,8 @@
     73,
     74,
     75,
-    76
+    76,
+    77
   ],
   "Attack_completed": [
     0,
@@ -125,5 +126,5 @@
   ],
   "Normal_failed": [],
   "Attack_failed": [],
-  "Last_update_bd": "13 Sep 2026, 07:20 PM"
+  "Last_update_bd": "13 Sep 2026, 07:21 PM"
 }
