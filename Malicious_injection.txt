@@ -185,7 +185,7 @@ Group5.nrofInterfaces = 1
 Scenario.name = Malicious_injection_12h_Int%%SinkCCN.interval%%_TTL%%Group.msgTtl%%_Buf%%Group.bufferSize%%_Seed%%MovementModel.rngSeed%%
 Scenario.simulateConnections = true
 Scenario.updateInterval = 0.1
-Scenario.endTime = 21600
+Scenario.endTime = 43200
 Scenario.nrofHostGroups = 5
 
 
