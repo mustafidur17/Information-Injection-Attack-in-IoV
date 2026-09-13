@@ -2,7 +2,7 @@ Settings.cartesianRunSettings = SinkCCN.interval,Group.bufferSize,Group.msgTtl,M
 
 # ============================================================
 # CONTENT POISONING + EPIDEMIC DISSEMINATION
-# 24-HOUR EXPERIMENT
+# 12-HOUR EXPERIMENT
 # ============================================================
 
 
@@ -182,10 +182,10 @@ Group5.nrofInterfaces = 1
 # SCENARIO SETTINGS
 #####################################################
 
-Scenario.name = Malicious_injection_24h_Int%%SinkCCN.interval%%_TTL%%Group.msgTtl%%_Buf%%Group.bufferSize%%_Seed%%MovementModel.rngSeed%%
+Scenario.name = Malicious_injection_12h_Int%%SinkCCN.interval%%_TTL%%Group.msgTtl%%_Buf%%Group.bufferSize%%_Seed%%MovementModel.rngSeed%%
 Scenario.simulateConnections = true
 Scenario.updateInterval = 0.1
-Scenario.endTime = 86400
+Scenario.endTime = 21600
 Scenario.nrofHostGroups = 5
 
 
@@ -274,6 +274,7 @@ MovementModel.rngSeed = [1;2]
 # TTL: 60,120,180,240,300 minutes (1,2,3,4,5 hours)
 # RNG seeds: 1,2
 # 5 intervals x 5 buffers x 5 TTLs x 2 seeds = 250 runs
+#
 # one.bat -b 250 Malicious_injection.txt
 
 
