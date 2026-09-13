@@ -1,0 +1,20 @@
+Message stats for scenario Malicious_injection_48h_Int1200_TTL300_Buf80k_Seed1
+sim_time: 172800.0000
+created: 1533
+started: 665735
+relayed: 665734
+aborted: 0
+dropped: 52016
+removed: 598592
+delivered: 841
+delivery_prob: 0.5486
+response_prob: 0.0000
+overhead_ratio: 790.5981
+latency_avg: 880.4468
+latency_med: 668.5000
+hopcount_avg: 9.2996
+hopcount_med: 6
+buffertime_avg: 1279.6514
+buffertime_med: 139.3000
+rtt_avg: NaN
+rtt_med: NaN
