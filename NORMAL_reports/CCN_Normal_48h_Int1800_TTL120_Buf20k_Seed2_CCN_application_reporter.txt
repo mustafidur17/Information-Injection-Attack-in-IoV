@@ -1,0 +1,25 @@
+CCN application reporter for scenario CCN_Normal_48h_Int1800_TTL120_Buf20k_Seed2
+sim_time: 172800.0000
+
+oppo_cache_hit: 47
+oppo_cache_miss: 1144
+drop_list:  0
+drop_pit:  94
+drop_nonce:  0
+query_count: 468
+duplicated_query: 102
+static_cache_hit: 382
+static_cache_miss: 279
+response_count: 365
+false_content_generated: 0
+false_content_cached: 0
+false_content_received: 0
+legitimate_content_received: 365
+false_content_reception_ratio: 0.0
+legitimate_content_satisfaction_ratio: 0.7799145299145299
+total_cache_evictions: 3090
+legitimate_content_evicted_by_false: 0
+max_cache_occupancy: 10
+max_false_content_in_cache: 0
+max_false_cache_ratio: 0.0
+average_interval: 11533.645479852117
