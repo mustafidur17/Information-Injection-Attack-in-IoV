@@ -1,0 +1,20 @@
+Message stats for scenario CCN_Normal_48h_Int1500_TTL240_Buf80k_Seed2
+sim_time: 172800.0000
+created: 1079
+started: 32239
+relayed: 32239
+aborted: 0
+dropped: 78
+removed: 32239
+delivered: 458
+delivery_prob: 0.4245
+response_prob: 0.0000
+overhead_ratio: 69.3908
+latency_avg: 3498.0017
+latency_med: 2539.2000
+hopcount_avg: 38.3341
+hopcount_med: 36
+buffertime_avg: 101.0846
+buffertime_med: 50.2000
+rtt_avg: NaN
+rtt_med: NaN
