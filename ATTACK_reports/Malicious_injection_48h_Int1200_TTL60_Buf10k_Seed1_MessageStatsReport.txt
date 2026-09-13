@@ -1,0 +1,20 @@
+Message stats for scenario Malicious_injection_48h_Int1200_TTL60_Buf10k_Seed1
+sim_time: 172800.0000
+created: 1402
+started: 416861
+relayed: 416860
+aborted: 0
+dropped: 39199
+removed: 368725
+delivered: 714
+delivery_prob: 0.5093
+response_prob: 0.0000
+overhead_ratio: 582.8375
+latency_avg: 780.1108
+latency_med: 627.9000
+hopcount_avg: 8.5196
+hopcount_med: 6
+buffertime_avg: 194.2357
+buffertime_med: 92.0000
+rtt_avg: NaN
+rtt_med: NaN
