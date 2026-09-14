@@ -1,0 +1,20 @@
+Message stats for scenario Malicious_injection_48h_Int600_TTL240_Buf40k_Seed2
+sim_time: 172800.0000
+created: 2881
+started: 1287194
+relayed: 1287194
+aborted: 0
+dropped: 97661
+removed: 1163576
+delivered: 1532
+delivery_prob: 0.5318
+response_prob: 0.0000
+overhead_ratio: 839.2050
+latency_avg: 927.4403
+latency_med: 706.1000
+hopcount_avg: 9.6886
+hopcount_med: 6
+buffertime_avg: 933.5784
+buffertime_med: 155.8000
+rtt_avg: NaN
+rtt_med: NaN
